@@ -43,7 +43,7 @@ const except_ary = str => {
     try {
         return JSON.parse(str);
     } catch (e) {
-        return str.split(',').split(' ').trim().filter(x => !!x);
+        return str.split(',').map(x =>x.split(' ')).flat().filter(x => !!x);
     }
 }
 
