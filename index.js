@@ -49,7 +49,6 @@ const except_ary = str => {
 
 const main = async() => {
 
-    console.log(argv);
     const except_list = except_ary(argv.except);
 
     const async_exec = promisify(exec);
