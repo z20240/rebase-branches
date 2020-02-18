@@ -6,8 +6,12 @@ const chalk = require('chalk');
 const parseArgs = require('minimist');
 
 const argv = parseArgs(process.argv.slice(2), {
-    alias: { 'e': ['except'], 'h': ['help'] },
-    string: ['e', 'except', '_'],
+    alias: {
+        'e': ['except'],
+        'o': ['only'],
+        'h': ['help']
+    },
+    string: ['e', 'except', 'o', 'only', '_'],
     boolean: ['h', 'help']
 });
 
@@ -30,16 +34,22 @@ You also can use
         '["branch name1", "branch name2"]' or
         'BranchName1 BranchName2'
 
-Example.
+Example. (rebase branches except these branches)
 ------------
 1. rebase-master -e 'br1,br2'
 2. rebase-master -e 'br1 br2'
 3. rebase-master -e '["br1", "br2"]'
+
+Example. (only these branch need to be rebase)
+------------
+1. rebase-master -o 'br1,br2'
+2. rebase-master -o 'br1 br2'
+3. rebase-master -o '["br1", "br2"]'
         `;
     console.log(cmd);
 }
 
-const except_ary = str => {
+const string_to_array = str => {
     try {
         return JSON.parse(str);
     } catch (e) {
@@ -49,7 +59,15 @@ const except_ary = str => {
 
 const main = async() => {
 
-    const except_list = except_ary(argv.except);
+    const except_list = argv.except ? string_to_array(argv.except) : [];
+    const only_list = argv.only ? string_to_array(argv.only) : [];
+
+    const except_br = br => !!(except_list.length) && except_list.includes(br);
+    const only_br = br => {
+        if (!only_list.length) return true;
+
+        return only_list.includes(br);
+    };
 
     const async_exec = promisify(exec);
     try {
@@ -61,7 +79,7 @@ const main = async() => {
         const br_names = stdout
             .split('\n')
             .map(line => line.replace('* ', '').trim())
-            .filter(br_name => !!br_name && br_name !== 'master' && !except_list.includes(br_name));
+            .filter(br_name => !!br_name && br_name !== 'master' && !except_br(br_name) && only_br(br_name));
 
         for (const br_name of br_names) {
             var { stdout } = await async_exec(`git checkout ${ br_name }`);
