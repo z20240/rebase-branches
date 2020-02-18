@@ -94,10 +94,12 @@ const main = async() => {
 
         await async_exec(`git checkout ${ curr_br_name }`);
 
-        console.log(chalk.black.bgCyan('~~~ All Completed ~~~'));
+        console.log(chalk.cyan.bgWhite('~~~ All Completed ~~~'));
     } catch (e) {
         console.log(chalk.red('Rebase occurs errors, please check if'), chalk.yellow('conflict'), chalk.red('.'));
         console.log(chalk.red('You can use 【'), chalk.yellow('git rebase --abort'), chalk.red('】to abort this rebase in the branch.'));
+        console.log(chalk.green('OR,'), chalk.red('Solve the Conflict and add to track then use【'), chalk.yellow('git rebase --continue'), chalk.red('】to continue this rebase in the branch.'));
+        console.log("   Detail message: -> e", e.message);
     }
 };
 
