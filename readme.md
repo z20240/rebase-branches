@@ -7,7 +7,7 @@ This is a tool for people who want to rebase master branch automatically to all 
 ### Install by npm
 
 ```
-npm i hmac-tool -g
+npm i rebase-master -g
 ```
 
 OR
@@ -31,6 +31,12 @@ $ rebase-master
 ```
 
 It will automatically rebase master branch for each branch.
+
+### Args
+
+- **-h, --help** : show usage.
+- **-o, --only** : only some branches need to rebase master.
+- **-e, --except** : branches rebase master except specified branches.
 
 **Hint: When occur conflict**
 
