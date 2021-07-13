@@ -1,6 +1,6 @@
 {
-    "name": "git-rebase-branch",
-    "version": "3.0.0",
+    "name": "rebase-branches",
+    "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "env": {
@@ -10,7 +10,7 @@
         "jasmine": true
     },
     "bin": {
-        "git-rebase-branch": "./index.js"
+        "rebase-branches": "./index.js"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"

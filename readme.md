@@ -1,13 +1,13 @@
-# rebase-master
+# rebase-branches
 
-This is a tool for people who want to rebase master branch automatically to all other branch.
+This is a tool for people who want to rebase specify branch (default master) automatically to all other branches.
 
 ## Getting started
 
 ### Install by npm
 
 ```
-npm i rebase-master -g
+npm i rebase-branches -g
 ```
 
 OR
@@ -15,9 +15,9 @@ OR
 ### Install by clone git
 
 ```
-$ git clone https://github.com/z20240/rebase-master.git
+$ git clone https://github.com/z20240/rebase-branches.git
 
-$ cd rebase-master
+$ cd rebase-branches
 
 $ sudo npm install -g
 ```
@@ -27,7 +27,7 @@ $ sudo npm install -g
 In your project which has the `git` using the command line
 
 ```
-$ rebase-master
+$ rebase-branches
 ```
 
 It will automatically rebase master branch for each branch.
@@ -37,12 +37,14 @@ It will automatically rebase master branch for each branch.
 - **-h, --help** : show usage.
 - **-o, --only** : only some branches need to rebase master.
 - **-e, --except** : branches rebase master except specified branches.
+- **--set-default [branch name]** : set default rebase branch.
+- **--show-default** : show current default rebase branch.
 
 **Hint: When occur conflict**
 
-Please resolve the conflict yourself, and retype the `rebase-master`.
+Please **resolve** the conflict yourself, and retry the `rebase-branches`.
 
-That's it!!!
+That's it~
 
 Enjoy your git rebase! :)
 
