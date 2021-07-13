@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const chalk = require('chalk');
+const { difference } = require('lodash');
 const parseArgs = require('minimist');
 const { exec } = require('child_process');
 const { promisify } = require('util');
@@ -14,12 +15,47 @@ const argv = parseArgs(process.argv.slice(2), {
     o: ['only'],
     h: ['help'],
   },
-  string: ['set-default', 't', 'target', 'e', 'except', 'o', 'only', '_'],
-  boolean: ['h', 'help', 'show-default'],
+  string: ['set-default', 'set-except', 'remove-except', 't', 'target', 'e', 'except', 'o', 'only', '_'],
+  boolean: ['h', 'help', 'show-default', 'show-except', 'show-all'],
 });
 
 const except_list = argv.except ? string_to_array(argv.except) : [];
 const only_list = argv.only ? string_to_array(argv.only) : [];
+
+/**
+ * @param {string} str
+ */
+const string_to_array = (str) => {
+  try {
+    return /** @type {string[]} */ (JSON.parse(str));
+  } catch (e) {
+    return str
+      .split(',')
+      .map((x) => x.split(' '))
+      .flat()
+      .filter((x) => !!x);
+  }
+};
+
+/**
+ * @desc check if `br` is in `except_br`.
+ * If no except_br, it will return `false` to show no except_br
+ * @param {string} br
+ * @returns
+ */
+const except_br = (br) =>
+  !![...except_list, ...config.except].length && [...except_list, ...config.except].includes(br);
+/**
+ * @desc check if `br` is in `only_br`
+ * If no only_br, it will return `true` to show no only_br
+ * @param {string} br
+ * @returns
+ */
+const only_br = (br) => {
+  if (!only_list.length) return true;
+
+  return only_list.includes(br);
+};
 
 const usage = () => {
   const cmd = chalk`
@@ -70,6 +106,9 @@ Example.
 $ git-rebase-branch --set-default develop
 
 --show-default: You can show default target branch.
+--set-except: You can set default except target branches.
+--show-except: You can show default except target branches.
+--show-all: You can show all config by using this command.
 `;
   console.log(cmd);
 };
@@ -85,14 +124,69 @@ if (argv.help) {
  */
 const set_default = (defaultValue) => {
   const newConfig = { ...config, default: defaultValue };
-  fs.writeFileSync('config.json', JSON.stringify(newConfig), {
+  fs.writeFileSync(__dirname + '/config.json', JSON.stringify(newConfig), {
     encoding: 'utf8',
   });
   console.log(chalk`default branch has been set to {bold ${defaultValue}}`);
 };
 
 if (argv['set-default']) {
-  set_default(argv['set-default']);
+  try {
+    set_default(argv['set-default']);
+  } catch (error) {
+    console.log(error);
+  }
+  process.exit(0);
+}
+
+/**
+ * @desc set except branch
+ * @param {string} except_inputs
+ */
+const set_except = (except_inputs) => {
+  const except_list = string_to_array(except_inputs);
+
+  const newConfig = { ...config, except: [...new Set([...config.except, ...except_list])] };
+  fs.writeFileSync('config.json', JSON.stringify(newConfig), {
+    encoding: 'utf8',
+  });
+  console.log(chalk`{bold ${except_list.toString()}} branch has been set.`);
+};
+
+if (argv['set-except']) {
+  set_except(argv['set-except']);
+  process.exit(0);
+}
+
+/**
+ * @desc remove except branch
+ * @param {string} except_inputs
+ */
+const remove_except = (except_inputs) => {
+  const except_list = string_to_array(except_inputs);
+
+  const remain = difference(except_list, config.except);
+
+  const newConfig = { ...config, except: remain };
+  fs.writeFileSync('config.json', JSON.stringify(newConfig), {
+    encoding: 'utf8',
+  });
+  console.log(chalk`{bold ${except_list.toString()}} branch has been remove.`);
+  console.log(chalk`remain {bold ${remain.toString()}}.`);
+};
+
+if (argv['remove-except']) {
+  remove_except(argv['remove-except']);
+  process.exit(0);
+}
+
+/**
+ * @desc show default branch
+ */
+const show_all = () => console.log(JSON.stringify(config));
+
+if (argv['show-all']) {
+  show_all();
   process.exit(0);
 }
 
@@ -105,48 +199,26 @@ if (argv['show-default']) {
   show_default();
   process.exit(0);
 }
-/**
- * @param {string} str
- */
-const string_to_array = (str) => {
-  try {
-    return /** @type {string[]} */ (JSON.parse(str));
-  } catch (e) {
-    return str
-      .split(',')
-      .map((x) => x.split(' '))
-      .flat()
-      .filter((x) => !!x);
-  }
-};
 
 /**
- * @desc check if `br` is in `except_br`.
- * If no except_br, it will return `false` to show no except_br
- * @param {string} br
- * @returns
+ * @desc show default branch
  */
-const except_br = (br) => !!except_list.length && except_list.includes(br);
-/**
- * @desc check if `br` is in `only_br`
- * If no only_br, it will return `true` to show no only_br
- * @param {string} br
- * @returns
- */
-const only_br = (br) => {
-  if (!only_list.length) return true;
+const show_except = () => console.log(chalk`{bold ${config.except.toString()}}`);
 
-  return only_list.includes(br);
-};
+if (argv['show-except']) {
+  show_except();
+  process.exit(0);
+}
+
 /**
- *
+ * @param {string} target default target branch
  * @param {string} brs
  * @returns
  */
-const get_branches = (brs) =>
+const get_branches = (target, brs) =>
   brs
     .split('\n')
-    .map((line) => line.replace('* ', '').trim())
+    .map((line) => line.replace('*', '').trim())
     .filter((br_name) => !!br_name && br_name !== target && !except_br(br_name) && only_br(br_name));
 
 /**
@@ -165,7 +237,7 @@ const catch_error = (error) => {
     chalk.yellow('git rebase --continue'),
     chalk.red('】to continue this rebase in the branch.'),
   );
-  console.log('   Detail message: ->\n', error.message);
+  console.log('   Detail message: ->', error.message);
 };
 
 /**
@@ -177,9 +249,12 @@ const catch_error = (error) => {
 const execCommand = async ({ cmd, msg }) => {
   const async_exec = promisify(exec);
 
-  const { stdout, stderr } = async_exec(cmd);
+  const { stdout, stderr } = await async_exec(cmd);
 
-  if (msg) console.log(msg, stdout);
+  if (msg) {
+    console.log(msg);
+    console.log(stdout);
+  }
 
   return { stdout, stderr };
 };
@@ -196,34 +271,34 @@ const main = async () => {
 
     var { stdout } = await execCommand({
       cmd: `git checkout ${target}`,
-      msg: chalk.blue(`checkout to ${target} \n`),
+      msg: chalk.blue(`checkout to ${target}`),
     });
 
     var { stdout } = await execCommand({
       cmd: 'git pull --rebase --autostash',
-      msg: `execute ${chalk.blue('git pull --rebase --autostash')} \n`,
+      msg: chalk.blue(`execute ${chalk.blue('git pull --rebase --autostash')}`),
     });
 
     var { stdout } = await execCommand({
       cmd: `git checkout ${curr_br_name}`,
-      msg: chalk`checkout back to {bold ${curr_br_name}} \n`,
+      msg: chalk.blue(`checkout back to ${chalk.bold(curr_br_name)}}`),
     });
 
     var { stdout } = await execCommand({
       cmd: 'git branch',
     });
 
-    const br_names = get_branches(stdout);
+    const br_names = get_branches(target, stdout);
 
     for (const br_name of br_names) {
       var { stdout } = await execCommand({
         cmd: `git checkout ${br_name}`,
-        msg: chalk.blue(`【${br_name}】 --> checkout to ${br_name} \n`),
+        msg: chalk.blue(`【${br_name}】 --> checkout to ${br_name}`),
       });
 
       var { stdout } = await execCommand({
         cmd: `git rebase ${target} --autostash`,
-        msg: chalk.green(`【${br_name}】 --> rebase ${target} completed \n`),
+        msg: chalk.green(`【${br_name}】 --> rebase ${target} completed`),
       });
 
       console.log('---------\n\n');
@@ -231,8 +306,9 @@ const main = async () => {
 
     await execCommand({
       cmd: `git checkout ${curr_br_name}`,
-      msg: chalk.cyan.bgWhite('~~~ All Completed ~~~'),
     });
+
+    console.log(chalk.cyan.bgWhite('~~~ All Completed ~~~'));
   } catch (e) {
     catch_error(e);
   }

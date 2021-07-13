@@ -1,1 +1,7 @@
-{"default":"master"}
+{
+    "default": "master",
+    "except": [
+        "master",
+        "develop"
+    ]
+}
