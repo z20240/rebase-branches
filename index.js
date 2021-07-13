@@ -116,8 +116,7 @@ const string_to_array = (str) => {
       .split(',')
       .map((x) => x.split(' '))
       .flat()
-      .filter((x) => !!x)
-      .map((x) => x.trim());
+      .filter((x) => !!x);
   }
 };
 
