@@ -8,6 +8,14 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const config = require('./config.json');
 
+Object.defineProperty(Array.prototype, 'flat', {
+  value: function(depth = Infinity) {
+    return this.reduce(function (flat, toFlatten) {
+      return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+    }, []);
+  }
+});
+
 const argv = parseArgs(process.argv.slice(2), {
   alias: {
     t: ['target'],
@@ -21,6 +29,7 @@ const argv = parseArgs(process.argv.slice(2), {
 
 const except_list = argv.except ? string_to_array(argv.except) : [];
 const only_list = argv.only ? string_to_array(argv.only) : [];
+const CONFIG_DIR = __dirname + '/config.json';
 
 /**
  * @param {string} str
@@ -147,7 +156,7 @@ const set_except = (except_inputs) => {
   const except_list = string_to_array(except_inputs);
 
   const newConfig = { ...config, except: [...new Set([...config.except, ...except_list])] };
-  fs.writeFileSync('config.json', JSON.stringify(newConfig), {
+  fs.writeFileSync(CONFIG_DIR, JSON.stringify(newConfig), {
     encoding: 'utf8',
   });
   console.log(chalk`{bold ${except_list.toString()}} branch has been set.`);
@@ -168,7 +177,7 @@ const remove_except = (except_inputs) => {
   const remain = difference(except_list, config.except);
 
   const newConfig = { ...config, except: remain };
-  fs.writeFileSync('config.json', JSON.stringify(newConfig), {
+  fs.writeFileSync(CONFIG_DIR, JSON.stringify(newConfig), {
     encoding: 'utf8',
   });
   console.log(chalk`{bold ${except_list.toString()}} branch has been remove.`);
