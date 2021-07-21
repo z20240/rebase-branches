@@ -9,11 +9,11 @@ const { promisify } = require('util');
 const config = require('./config.json');
 
 Object.defineProperty(Array.prototype, 'flat', {
-  value: function(depth = Infinity) {
+  value: function (depth = Infinity) {
     return this.reduce(function (flat, toFlatten) {
-      return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+      return flat.concat(Array.isArray(toFlatten) && depth > 1 ? toFlatten.flat(depth - 1) : toFlatten);
     }, []);
-  }
+  },
 });
 
 const argv = parseArgs(process.argv.slice(2), {
@@ -77,47 +77,67 @@ In your git project, type down \`git-rebase-branch\` to automatically rebase tar
 You also can use:
 
 -t / --target: assign the specify branch as target.
-Example. (equals to git rebase develop)
-------------
-$ git-rebase-branch -t develop
+  Example. (equals to git rebase develop)
+  ------------
+  $ git-rebase-branch -t develop
 
 -e / --except: tell the tool except these branches.
-args could be a string split by commas. ex. 'branch name1, branch name2, ...'
-or
-    could be an array: ex. '["branch name1", "branch name2"]'
-or
-    could be split by white space: ex. 'BranchName1 BranchName2'
+  args could be a string split by commas. ex. 'branch name1, branch name2, ...'
+  or
+      could be an array: ex. '["branch name1", "branch name2"]'
+  or
+      could be split by white space: ex. 'BranchName1 BranchName2'
 
-Example. (rebase branches except these branches)
-------------
-1. git-rebase-branch -e 'br1,br2'
-2. git-rebase-branch -e 'br1 br2'
-3. git-rebase-branch -e '["br1", "br2"]'
+  Example. (rebase branches except these branches)
+  ------------
+  1. git-rebase-branch -e 'br1,br2'
+  2. git-rebase-branch -e 'br1 br2'
+  3. git-rebase-branch -e '["br1", "br2"]'
 
 -o / --only: tell the tool {bold only need} to rebase these branches.
-args could be split by commas. ex. 'branch name1, branch name2, ...'
-or
-could be an array: ex. '["branch name1", "branch name2"]'
-or
-could be split by white space: ex. 'BranchName1 BranchName2'
+  args could be split by commas. ex. 'branch name1, branch name2, ...'
+  or
+  could be an array: ex. '["branch name1", "branch name2"]'
+  or
+  could be split by white space: ex. 'BranchName1 BranchName2'
 
-Example. (only these branch need to be rebase)
-------------
-1. git-rebase-branch -o 'br1,br2'
-2. git-rebase-branch -o 'br1 br2'
-3. git-rebase-branch -o '["br1", "br2"]'
+  Example. (only these branch need to be rebase)
+  ------------
+  1. git-rebase-branch -o 'br1,br2'
+  2. git-rebase-branch -o 'br1 br2'
+  3. git-rebase-branch -o '["br1", "br2"]'
 
 --set-default: You can set target branch as default rebase branch.
-After the setting, each time you rebase will base on the target branch you set.
+  After the setting, each time you rebase will base on the target branch you set.
 
-Example.
-------------
-$ git-rebase-branch --set-default develop
+  Example.
+  ------------
+  $ git-rebase-branch --set-default develop
 
 --show-default: You can show default target branch.
+  Example.
+  ------------
+  $ git-rebase-branch --show-default
+
 --set-except: You can set default except target branches.
+  Example.
+  ------------
+  $ git-rebase-branch --set-default 'br1,br2'
+
+--remove-except: You can remove default except target branches.
+  Example.
+  ------------
+  $ git-rebase-branch --remove-default 'br1,br2'
+
 --show-except: You can show default except target branches.
+  Example.
+  ------------
+  $ git-rebase-branch --show-except
+
 --show-all: You can show all config by using this command.
+  Example.
+  ------------
+  $ git-rebase-branch --show-all
 `;
   console.log(cmd);
 };

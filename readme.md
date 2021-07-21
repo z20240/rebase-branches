@@ -39,10 +39,13 @@ It will automatically rebase master branch for each branch.
 - **-e, --except** : branches rebase master except specified branches.
 - **--set-default [branch name]** : set default rebase branch.
 - **--show-default** : show current default rebase branch.
-
+- **--set-except**: You can set default except target branches.
+- **--show-except**: You can show default except target branches.
+- **--show-all**: You can show all config by using this command.
+- **remove-except**: You can remove default except target branches.
 **Hint: When occur conflict**
 
-Please **resolve** the conflict yourself, and retry the `rebase-branches`.
+Please **resolve** the conflict yourself, and retry the `rebase-branches` again.
 
 That's it~
 
