@@ -1,6 +1,6 @@
 {
     "name": "rebase-branches",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "description": "",
     "main": "index.js",
     "env": {
@@ -28,5 +28,9 @@
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^3.4.0",
         "prettier": "2.3.2"
-    }
+    },
+    "keywords": [
+        "git",
+        "rebase"
+    ]
 }
