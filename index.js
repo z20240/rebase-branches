@@ -27,14 +27,10 @@ const argv = parseArgs(process.argv.slice(2), {
   boolean: ['h', 'help', 'show-default', 'show-except', 'show-all'],
 });
 
-const except_list = argv.except ? string_to_array(argv.except) : [];
-const only_list = argv.only ? string_to_array(argv.only) : [];
-const CONFIG_DIR = __dirname + '/config.json';
-
 /**
  * @param {string} str
  */
-const string_to_array = (str) => {
+ const string_to_array = (str) => {
   try {
     return /** @type {string[]} */ (JSON.parse(str));
   } catch (e) {
@@ -45,6 +41,10 @@ const string_to_array = (str) => {
       .filter((x) => !!x);
   }
 };
+
+const except_list = argv.except ? string_to_array(argv.except) : [];
+const only_list = argv.only ? string_to_array(argv.only) : [];
+const CONFIG_DIR = __dirname + '/config.json';
 
 /**
  * @desc check if `br` is in `except_br`.

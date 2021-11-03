@@ -1,36 +1,36 @@
 {
-    "name": "rebase-branches",
-    "version": "1.4.4",
-    "description": "",
-    "main": "index.js",
-    "env": {
-        "es6": true,
-        "node": true,
-        "jest": true,
-        "jasmine": true
-    },
-    "bin": {
-        "rebase-branches": "./index.js"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "chalk": "^4.1.1",
-        "lodash": "^4.17.21",
-        "minimist": "^1.2.0",
-        "prettier-eslint": "^12.0.0"
-    },
-    "devDependencies": {
-        "eslint": "^7.30.0",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-prettier": "^3.4.0",
-        "prettier": "2.3.2"
-    },
-    "keywords": [
-        "git",
-        "rebase"
-    ]
+  "name": "rebase-branches",
+  "version": "1.4.5",
+  "description": "",
+  "main": "index.js",
+  "env": {
+    "es6": true,
+    "node": true,
+    "jest": true,
+    "jasmine": true
+  },
+  "bin": {
+    "rebase-branches": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.0",
+    "prettier-eslint": "^12.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "2.3.2"
+  },
+  "keywords": [
+    "git",
+    "rebase"
+  ]
 }
