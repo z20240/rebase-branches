@@ -30,7 +30,7 @@ const argv = parseArgs(process.argv.slice(2), {
 /**
  * @param {string} str
  */
- const string_to_array = (str) => {
+const string_to_array = (str) => {
   try {
     return /** @type {string[]} */ (JSON.parse(str));
   } catch (e) {
@@ -218,7 +218,7 @@ ${chalk.bold('Default branch:')}
   - ${config.default}
 
 ${chalk.bold('Except branches:')}
-${config.except.map(br => `  - ${br}\n`)}
+${config.except.map((br) => `  - ${br}`).join('\n')}
 `);
 };
 
@@ -241,7 +241,7 @@ if (argv['show-default']) {
  * @desc show default branch
  */
 const show_except = () => {
-  console.log(chalk`{bold ${config.except.map(br => `- ${br}\n`)}}`);
+  console.log(chalk`{bold ${config.except.map((br) => `- ${br}`).join('\n')}}`);
 };
 
 if (argv['show-except']) {
