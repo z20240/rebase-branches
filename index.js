@@ -72,11 +72,11 @@ This is a command line tool for people who want to rebase master branch automati
 
 Usage:
 ------------
-In your git project, type down \`git-rebase-branch\` to automatically rebase target branch (default {bold master}) for branches.
+In your git project, type down \`rebase-branches\` to automatically rebase target branch (default {bold master}) for branches.
 
 You also can use:
 
--t / --target: assign the specify branch as target.
+-t / --target: rebase the branches base on target given.
   Example. (equals to git rebase develop)
   ------------
   $ git-rebase-branch -t develop
@@ -194,7 +194,7 @@ if (argv['set-except']) {
 const remove_except = (except_inputs) => {
   const except_list = string_to_array(except_inputs);
 
-  const remain = difference(except_list, config.except);
+  const remain = difference(config.except, except_list);
 
   const newConfig = { ...config, except: remain };
   fs.writeFileSync(CONFIG_DIR, JSON.stringify(newConfig), {
@@ -212,7 +212,15 @@ if (argv['remove-except']) {
 /**
  * @desc show default branch
  */
-const show_all = () => console.log(JSON.stringify(config));
+const show_all = () => {
+  console.log(`
+${chalk.bold('Default branch:')}
+  - ${config.default}
+
+${chalk.bold('Except branches:')}
+${config.except.map(br => `  - ${br}\n`)}
+`);
+};
 
 if (argv['show-all']) {
   show_all();
@@ -232,7 +240,9 @@ if (argv['show-default']) {
 /**
  * @desc show default branch
  */
-const show_except = () => console.log(chalk`{bold ${config.except.toString()}}`);
+const show_except = () => {
+  console.log(chalk`{bold ${config.except.map(br => `- ${br}\n`)}}`);
+};
 
 if (argv['show-except']) {
   show_except();
