@@ -274,9 +274,10 @@ const catch_error = (error) => {
     chalk.green('OR,'),
     chalk.red('Solve the Conflict and add to track then use【'),
     chalk.yellow('git rebase --continue'),
-    chalk.red('】to continue this rebase in the branch.'),
+    chalk.red('】to continue this rebase in the branch.\n'),
   );
-  console.log('   Detail message: ->', error.message);
+  console.log(`${chalk.bold('Detail message: \n---')}`);
+  console.warn(error.message);
 };
 
 /**
