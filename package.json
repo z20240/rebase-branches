@@ -1,10 +1,10 @@
 {
   "name": "rebase-branches",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "author": {
     "name": "Les Lee",
     "email": "z20240z@gmail.com",
-    "url": "https://medium.com/@z20240"
+    "url": "https://z20240.github.io"
   },
   "description": "`rebase-branches` is an easy to use tool help you rebase all local branches base on target branch",
   "repository": {
