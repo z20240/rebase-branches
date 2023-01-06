@@ -1,5 +1,7 @@
 # rebase-branches
 
+![](https://z20240.github.io/gallary/rebase-branches.jpg)
+
 This is a tool for people who want to rebase specify branch (default master) automatically to all other branches.
 
 ## Getting started
